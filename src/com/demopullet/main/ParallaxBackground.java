@@ -3,12 +3,11 @@
  */
 package com.demopullet.main;
 
-import java.util.ArrayList;
-
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 
 /**
  * @author ngocha
@@ -22,17 +21,16 @@ public class ParallaxBackground {
 	private int toadonen2_X = 0;
 	private Bitmap hinhnen2;
 
-	private ArrayList<Bitmap> listTileGrassTop = new ArrayList<Bitmap>();
+	Paint paint = new Paint();
 
 	public ParallaxBackground(Resources c) {
 		hinhnen1 = BitmapFactory.decodeResource(c, R.drawable.background);
 
 		hinhnen2 = BitmapFactory.decodeResource(c, R.drawable.tilegrasstop);
-		int numberOfTile = hinhnen1.getWidth() / hinhnen2.getWidth();
-		for (int i = 0; i < numberOfTile + 1; i++) {
-			hinhnen2 = BitmapFactory.decodeResource(c, R.drawable.tilegrasstop);
-			listTileGrassTop.add(hinhnen2);
-		}
+
+		paint.setAntiAlias(false);
+		paint.setFilterBitmap(false);
+		paint.setDither(true);
 
 	}
 
@@ -41,56 +39,45 @@ public class ParallaxBackground {
 		// giam toa do de dich chuyen cho nen1
 		toadonen1_X = toadonen1_X - 1;
 
-		toadonen2_X = toadonen2_X - 1;
+		toadonen2_X = toadonen2_X - 5; // width cua tile phai them 5 px vi toc
+										// do =5
 
 		// tinh do lech cho hinh 2 (xem hinh minh hoa)
-		int toadonen1_phu_X = hinhnen1.getWidth() - (-toadonen1_X);
+		int toadonen1_phu_X = canvas.getWidth() - (-toadonen1_X);
 
 		// da di chuyen het thi quay lai tu dau
 		if (toadonen1_phu_X <= 0) {
 			toadonen1_X = 0;
 			// chi can ve 1 tam
-			canvas.drawBitmap(hinhnen1, 0, 0, null);
+			canvas.drawBitmap(hinhnen1, 0, 0, paint);
 
 		} else {
 			// ve 1 tam lech va tam 2 noi duoi theo
-			canvas.drawBitmap(hinhnen1, toadonen1_X, 0, null);
-			canvas.drawBitmap(hinhnen1, toadonen1_phu_X, 0, null);
+			canvas.drawBitmap(hinhnen1, toadonen1_X, 0, paint);
+			canvas.drawBitmap(hinhnen1, toadonen1_phu_X, 0, paint);
 		}
 
-		if (toadonen1_phu_X <= 0) {
-			toadonen1_X = 0;
-			canvas.drawBitmap(hinhnen1,
-					canvas.getWidth() - hinhnen1.getWidth(), canvas.getHeight()
-							- hinhnen1.getHeight(), null);
+		int toadonen2_phu_X = canvas.getWidth() - (-toadonen2_X);
+
+		if (toadonen2_phu_X <= 0) {
+			toadonen2_X = 0;
+			canvas.drawBitmap(hinhnen2, hinhnen2.getWidth() + 5, 0, paint);
 
 		} else {
-			canvas.drawBitmap(hinhnen1, toadonen1_X, canvas.getHeight()
-					- hinhnen1.getHeight(), null);
-			canvas.drawBitmap(hinhnen1, toadonen1_phu_X, canvas.getHeight()
-					- hinhnen1.getHeight(), null);
+			canvas.drawBitmap(hinhnen2, toadonen2_X, canvas.getHeight()
+					- hinhnen2.getHeight(), paint);
+			canvas.drawBitmap(hinhnen2, toadonen2_phu_X, canvas.getHeight()
+					- hinhnen2.getHeight(), paint);
 		}
 
-		for (int i = 0; i < listTileGrassTop.size(); i++) {
+		System.out.println("Canvas Height: " + canvas.getHeight()
+				+ " Canvas Width: " + canvas.getWidth());
 
-			Bitmap bitmap = listTileGrassTop.get(i);
-			int toadonen2_phu_X = canvas.getWidth() - (-toadonen2_X);
+		System.out.println("hinhnen1 Height: " + hinhnen1.getHeight()
+				+ " hinhnen1 Width: " + hinhnen1.getWidth());
 
-			if (toadonen2_phu_X <= 0) {
-				toadonen2_X = 0;
-				canvas.drawBitmap(bitmap,
-						canvas.getWidth() + ((i + 1) * bitmap.getWidth()),
-						canvas.getHeight() - bitmap.getHeight(), null);
-
-			} else {
-				canvas.drawBitmap(bitmap,
-						toadonen2_X + ((i + 1) * bitmap.getWidth()),
-						canvas.getHeight() - bitmap.getHeight(), null);
-				canvas.drawBitmap(bitmap,
-						toadonen2_phu_X + ((i + 1) * bitmap.getWidth()),
-						canvas.getHeight() - bitmap.getHeight(), null);
-			}
-		}
+		System.out.println("hinhnen2 Height: " + hinhnen2.getHeight()
+				+ " hinhnen2 Width: " + hinhnen2.getWidth());
 
 	}
 }
