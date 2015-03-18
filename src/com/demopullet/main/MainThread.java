@@ -31,7 +31,9 @@ public class MainThread extends Thread {
 	public void run() {
 
 		super.run();
+
 		Canvas canvas = null;
+
 		while (running) {
 			canvas = surfaceholder.lockCanvas();
 			if (canvas != null) {
